@@ -37,7 +37,7 @@ const SITE_TITLE = "Jambooneer | Pure Water. Honest Delivery.";
 const META_DESCRIPTION =
   "Jambooneer brings rigorously purified, mineral-balanced water straight to your home, office, or event — clean water, honest delivery, every single time.";
 const CONTACT_ADDRESS = "Full Address Here"; // TODO: Replace with real address
-const CONTACT_PHONE = "+91 00000 00000"; // TODO: Replace with real phone
+const CONTACT_PHONE = "+91 9770674420"; // TODO: Replace with real phone
 const CONTACT_EMAIL = "hello@jambooneer.com";
 const OFFICE_HOURS = "[Timing] · 7 Days a Week";
 // const OG_IMAGE = "https://jambooneer.com/logo.png"; // TODO: Replace with real OG image
@@ -866,80 +866,137 @@ export default function Jamboo() {
         </div>
       </section>
 
-      {/* PRODUCTS */}
-      <section id="products" className="relative overflow-hidden bg-[#EDE7F6] px-6 py-32 md:px-10 md:py-44">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-20 flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div>
-              <div className="mb-5 flex items-center gap-3">
-                <span className="h-px w-10 bg-[#9C27B0]" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#6A1B9A]">What We Offer</span>
-              </div>
-              <div className="overflow-hidden">
-                <h2 className="section-title-line text-5xl font-light leading-none tracking-[-0.05em] text-[#2d0a4e] md:text-7xl">
-                  One Brand.<br /><span className="font-black">Every Kind of Thirst.</span>
-                </h2>
-              </div>
-            </div>
-            <p className="max-w-md text-sm leading-6 text-[#7e5a8e]">
-              From a single bottle to a fleet of tankers — Jambooneer scales to meet you where you are.
-            </p>
-          </div>
+    {/* PRODUCTS */}
+<section
+  id="products"
+  className="relative overflow-hidden bg-[#EDE7F6] px-6 py-32 md:px-10 md:py-44"
+>
+  <div className="mx-auto max-w-7xl">
 
-          <div className="mb-8 flex gap-2 overflow-x-auto pb-3">
-            {products.map((product, index) => (
-              <button
-                key={product.number}
-                onClick={() => setActiveProduct(index)}
-                className={`whitespace-nowrap rounded-full px-5 py-3 text-[9px] font-black uppercase tracking-[0.15em] transition-all ${
-                  activeProduct === index ? "bg-[#2d0a4e] text-white" : "bg-white text-[#7e57a2] hover:bg-[#F3E5F5]"
-                }`}
-              >
-                {product.title}
-              </button>
-            ))}
-          </div>
+    <div className="mb-20 flex flex-col justify-between gap-8 md:flex-row md:items-end">
+      <div>
 
-          <div className="products-grid grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {products.map((product, index) => (
-              <article
-                key={product.number}
-                onMouseEnter={() => setActiveProduct(index)}
-                className={`product-card group relative min-h-[500px] overflow-hidden rounded-[28px] bg-white transition-all duration-700 ${
-                  activeProduct === index
-                    ? "shadow-[0_35px_80px_rgba(45,10,78,0.15)]"
-                    : "shadow-[0_15px_40px_rgba(45,10,78,0.04)]"
-                }`}
-              >
-                <div className="absolute inset-0">
-                  <img src={product.image} alt={product.title} className="h-full w-full object-cover transition duration-1000 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2d0a4e] via-[#2d0a4e]/30 to-transparent" />
-                </div>
-                <div className="relative flex h-full min-h-[500px] flex-col justify-between p-7 text-white">
-                  <div className="flex items-start justify-between">
-                    <span className="text-xs font-black tracking-[0.2em] text-white/60">{product.number}</span>
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-500 group-hover:rotate-45">
-                      <FiArrowUpRight />
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="max-w-sm text-2xl font-black tracking-tight">{product.title}</h3>
-                    <p className="mt-3 max-w-sm text-sm sm:text-base md:text-lg leading-5 text-white/70">{product.text}</p>
-                    <div className="mt-6 grid gap-2">
-                      {product.items.map((item) => (
-                        <div key={item} className="flex items-center gap-2 text-[12px] font-medium text-white/80">
-                          <FiCheck className="text-[#CE93D8]" />{item}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+        <div className="mb-5 flex items-center gap-3">
+          <span className="h-px w-10 bg-[#9C27B0]" />
+
+          <span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#6A1B9A]">
+            What We Offer
+          </span>
         </div>
-      </section>
 
+        <div className="overflow-hidden">
+          <h2 className="section-title-line text-5xl font-light leading-none tracking-[-0.05em] text-[#2d0a4e] md:text-7xl">
+            One Brand.
+            <br />
+            <span className="font-black">
+              Every Kind of Thirst.
+            </span>
+          </h2>
+        </div>
+
+      </div>
+
+      <p className="max-w-md text-sm leading-6 text-[#7e5a8e]">
+        From a single bottle to a fleet of tankers — Jambooneer scales to
+        meet you where you are.
+      </p>
+    </div>
+
+    <div className="mb-8 flex gap-2 overflow-x-auto pb-3">
+      {products.map((product, index) => (
+        <button
+          key={product.number}
+          onClick={() => setActiveProduct(index)}
+          className={`whitespace-nowrap rounded-full px-5 py-3 text-[9px] font-black uppercase tracking-[0.15em] transition-all ${
+            activeProduct === index
+              ? "bg-[#2d0a4e] text-white"
+              : "bg-white text-[#7e57a2] hover:bg-[#F3E5F5]"
+          }`}
+        >
+          {product.title}
+        </button>
+      ))}
+    </div>
+
+    <div className="products-grid grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+
+      {products.map((product, index) => (
+        <article
+          key={product.number}
+          onMouseEnter={() => setActiveProduct(index)}
+
+          // Click product card → Contact section
+          onClick={() => {
+            document.getElementById("contact")?.scrollIntoView({
+              behavior: "smooth",
+            });
+          }}
+
+          className={`product-card group relative min-h-[500px] cursor-pointer overflow-hidden rounded-[28px] bg-white transition-all duration-700 ${
+            activeProduct === index
+              ? "shadow-[0_35px_80px_rgba(45,10,78,0.15)]"
+              : "shadow-[0_15px_40px_rgba(45,10,78,0.04)]"
+          }`}
+        >
+
+          <div className="absolute inset-0">
+
+            <img
+              src={product.image}
+              alt={product.title}
+              className="h-full w-full object-cover transition duration-1000 group-hover:scale-110"
+            />
+
+            <div className="absolute inset-0 bg-gradient-to-t from-[#2d0a4e] via-[#2d0a4e]/30 to-transparent" />
+
+          </div>
+
+          <div className="relative flex h-full min-h-[500px] flex-col justify-between p-7 text-white">
+
+            <div className="flex items-start justify-between">
+
+              <span className="text-xs font-black tracking-[0.2em] text-white/60">
+                {product.number}
+              </span>
+
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-md transition-transform duration-500 group-hover:rotate-45">
+                <FiArrowUpRight />
+              </span>
+
+            </div>
+
+            <div>
+
+              <h3 className="max-w-sm text-2xl font-black tracking-tight">
+                {product.title}
+              </h3>
+
+              <p className="mt-3 max-w-sm text-sm leading-5 text-white/70 sm:text-base md:text-lg">
+                {product.text}
+              </p>
+
+              <div className="mt-6 grid gap-2">
+                {product.items.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-2 text-[12px] font-medium text-white/80"
+                  >
+                    <FiCheck className="text-[#CE93D8]" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+      ))} 
+
+    </div>
+  </div>
+</section>
       {/* WHY US */}
       <section id="why-us" className="relative bg-[#2d0a4e] px-6 py-32 text-white md:px-10 md:py-44">
         <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#9C27B0]/10 blur-[130px]" />

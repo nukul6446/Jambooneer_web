@@ -18,6 +18,6 @@
 Replace the bottle image (src/assets/product2.png) with real Jambooneer-branded photography.
 
 Update BUSINESS_INFO constants with the real address and phone number.
-
+9770674420
 Wire the form in handleSubmit to your backend, email service (EmailJS, Resend, etc.), or CRM instead of the simulated setTimeout.
 Update OG_IMAGE with your actual social-share image URL.
