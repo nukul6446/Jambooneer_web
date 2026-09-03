@@ -42,7 +42,7 @@ const META_DESCRIPTION =
 
 const CONTACT_ADDRESS = "Khasra No. 261/2 Deeni, Waraseoni, Balaghat, Madhya Pradesh - 481331";
 const CONTACT_PHONE = "+91 9770674420";
-const CONTACT_EMAIL = "hello@jambooneer.com";
+const CONTACT_EMAIL = "sale@jambooneer.com";
 const OFFICE_HOURS = "10:00 AM - 6:00 PM · 7 Days a Week";
 const WHATSAPP_NUMBER = "919770674420";
 
