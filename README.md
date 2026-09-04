@@ -46,7 +46,7 @@ SMTP_PORT=587
 SMTP_USER= 
 SMTP_PASS= 
 ADMIN_EMAIL= 
-# ADMIN_DASHBOARD_URL=https://your-dashboard.com   # optional, for the "View in Dashboard" link
+ 
 
 
 =========================================================================================
