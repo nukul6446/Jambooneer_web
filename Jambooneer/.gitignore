@@ -25,6 +25,6 @@ dist-ssr
 
 .env
 
-assets/
+ 
 
 tailwind.config.js, vite.config.js, 
