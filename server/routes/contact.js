@@ -12,11 +12,16 @@ const Contact = require("../models/Contact.js");
 // authentication errors on deployed servers
 // ─────────────────────────────────────────────────────────────
 
+const smtpPort = Number(process.env.SMTP_PORT) || 587;
+
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: smtpPort,
+  secure: smtpPort === 465,
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    // Gmail app passwords are often copied with spaces between groups.
+    pass: process.env.SMTP_PASS?.replace(/\s+/g, ""),
   },
 });
 
@@ -143,12 +148,13 @@ router.post("/", contactValidation, async (req, res) => {
     // DATABASE CONNECTION CHECK
     // ─────────────────────────────────────────────────────
 
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({
-        success: false,
-        message:
-          "Database is temporarily unavailable. Please try again shortly.",
-      });
+    const databaseAvailable = mongoose.connection.readyState === 1;
+    let contact = null;
+
+    if (!databaseAvailable) {
+      console.warn(
+        "⚠️ MongoDB unavailable; continuing with email delivery only."
+      );
     }
 
     // ─────────────────────────────────────────────────────
@@ -156,39 +162,41 @@ router.post("/", contactValidation, async (req, res) => {
     // One submission per email every 5 minutes
     // ─────────────────────────────────────────────────────
 
-    const fiveMinutesAgo = new Date(
-      Date.now() - 5 * 60 * 1000
-    );
+    if (databaseAvailable) {
+      const fiveMinutesAgo = new Date(
+        Date.now() - 5 * 60 * 1000
+      );
 
-    const recentSubmission = await Contact.findOne({
-      email,
-      createdAt: { $gte: fiveMinutesAgo },
-    });
-
-    if (recentSubmission) {
-      return res.status(429).json({
-        success: false,
-        message:
-          "You recently submitted an enquiry. Please wait a few minutes before trying again.",
+      const recentSubmission = await Contact.findOne({
+        email,
+        createdAt: { $gte: fiveMinutesAgo },
       });
+
+      if (recentSubmission) {
+        return res.status(429).json({
+          success: false,
+          message:
+            "You recently submitted an enquiry. Please wait a few minutes before trying again.",
+        });
+      }
+
+      // Save the enquiry when MongoDB is available. Email delivery remains
+      // independent so a temporary database outage does not lose the lead.
+      contact = new Contact({
+        fullName,
+        phone,
+        email,
+        message,
+      });
+
+      await contact.save();
+
+      console.log(
+        `✅ Contact saved to DB: ${contact._id}`
+      );
     }
 
-    // ─────────────────────────────────────────────────────
-    // SAVE TO MONGODB
-    // ─────────────────────────────────────────────────────
-
-    const contact = new Contact({
-      fullName,
-      phone,
-      email,
-      message,
-    });
-
-    await contact.save();
-
-    console.log(
-      `✅ Contact saved to DB: ${contact._id}`
-    );
+    const enquiryId = contact?._id || new mongoose.Types.ObjectId();
 
     // ─────────────────────────────────────────────────────
     // SEND EMAIL TO ADMIN
@@ -205,6 +213,8 @@ router.post("/", contactValidation, async (req, res) => {
       process.env.SMTP_PASS ? "SET ✅" : "NOT SET ❌"
     );
 
+    let emailSent = false;
+
     if (
       ADMIN_EMAIL &&
       process.env.SMTP_USER &&
@@ -214,6 +224,7 @@ router.post("/", contactValidation, async (req, res) => {
         const mailResult = await transporter.sendMail({
           from: `"Jambooneer Website" <${process.env.SMTP_USER}>`,
           to: ADMIN_EMAIL,
+          replyTo: email,
           subject: `New Enquiry from ${fullName}`,
           html: `
             <!DOCTYPE html>
@@ -354,7 +365,7 @@ router.post("/", contactValidation, async (req, res) => {
                     color: #888;
                   "
                 >
-                  Enquiry ID: ${contact._id}
+                  Enquiry ID: ${enquiryId}
                 </p>
               </div>
             </body>
@@ -368,7 +379,7 @@ Email   : ${email}
 Phone   : ${phone}
 Message : ${message || "No message provided"}
 
-Enquiry ID : ${contact._id}
+Enquiry ID : ${enquiryId}
 Time       : ${new Date().toLocaleString("en-IN")}
           `,
         });
@@ -381,6 +392,7 @@ Time       : ${new Date().toLocaleString("en-IN")}
           "   Message ID:",
           mailResult.messageId
         );
+        emailSent = true;
       } catch (emailError) {
         // Email failure does NOT undo the saved enquiry
         console.error(
@@ -418,8 +430,9 @@ Time       : ${new Date().toLocaleString("en-IN")}
       success: true,
       message: "Thank you! We have received your enquiry.",
       data: {
-        id: contact._id,
-        createdAt: contact.createdAt,
+        id: enquiryId,
+        createdAt: contact?.createdAt || new Date(),
+        emailSent,
       },
     });
   } catch (error) {

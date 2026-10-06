@@ -52,7 +52,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:3000",
-  process.env.CLIENT_URL.trim()   // important!
+  process.env.CLIENT_URL,
 ].filter(Boolean);
 
 console.log("🌐 Allowed origins:", allowedOrigins);
@@ -158,10 +158,22 @@ const connectDB = async () => {
 // ─────────────────────────────────────────────────────────────
 
 app.use(async (req, res, next) => {
+  if (req.path === "/" || req.path === "/api/health") {
+    return next();
+  }
+
   try {
     await connectDB();
     next();
   } catch (error) {
+    if (req.method === "POST" && req.path === "/api/contact") {
+      console.warn(
+        "⚠️ MongoDB unavailable; contact will be emailed without database storage."
+      );
+      req.dbUnavailable = true;
+      return next();
+    }
+
     return res.status(503).json({
       success: false,
       message:
