@@ -40,11 +40,13 @@ const SITE_TITLE = "Jambooneer | Pure Water. Honest Delivery.";
 const META_DESCRIPTION =
   "Jambooneer brings rigorously purified, mineral-balanced water straight to your home, office, or event — clean water, honest delivery, every single time.";
 
-const CONTACT_ADDRESS = "Khasra No. 261/2 Deeni, Waraseoni, Balaghat, Madhya Pradesh - 481331";
+const CONTACT_ADDRESS = "KH.NO.261/2, Village Dini, Tehsil Waraseoni, District Balaghat (M.P.) 481331";
+const OFFICE_ADDRESS = "C/O Shrimati Lata Elkar, Ward No.33, Moti Nagar, District Balaghat 481001";
+
 const CONTACT_PHONE = "+91 9770674420";
-const CONTACT_EMAIL = "sale@jambooneer.com";
+const CONTACT_EMAIL = "shrigopalsmritiagro@gmail.com";
 const OFFICE_HOURS = "10:00 AM - 6:00 PM · 7 Days a Week";
-const WHATSAPP_NUMBER = "919770674420";
+const WHATSAPP_NUMBER = "9770674420";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -803,7 +805,7 @@ export default function Jamboo() {
         return;
       }
       if (!response.ok) {
-        setFormErrors([]);
+        setFormErrors([{ field: "form", message: data.message || t.errorMessage }]);
         setFormStatus("error");
         return;
       }
@@ -1255,7 +1257,7 @@ export default function Jamboo() {
               <h2 className="contact-heading text-5xl font-light leading-[0.95] tracking-[-0.05em] md:text-7xl">{t.contactTitle1}<br /><span className="font-black">{t.contactTitle2}</span><br />{t.contactTitle3}</h2>
               <p className="mt-8 max-w-md text-[15px] leading-7 text-white/50">{t.contactSub}</p>
               <div className="mt-12 grid gap-6">
-                {[[<FiMapPin key="map" />, t.locationLabel, CONTACT_ADDRESS], [<FiPhone key="ph" />, t.phoneLabel, CONTACT_PHONE], [<FiMail key="ml" />, t.emailLabel, CONTACT_EMAIL], [<FiClock key="cl" />, t.officeHoursLabel, OFFICE_HOURS]].map(([icon, label, val], i) => (
+                {[[<FiMapPin key="map" />, t.locationLabel, `${CONTACT_ADDRESS} | Office: ${OFFICE_ADDRESS}`], [<FiPhone key="ph" />, t.phoneLabel, CONTACT_PHONE], [<FiMail key="ml" />, t.emailLabel, CONTACT_EMAIL], [<FiClock key="cl" />, t.officeHoursLabel, OFFICE_HOURS]].map(([icon, label, val], i) => (
                   <div key={i} className="flex items-start gap-4">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#7DD3FC]">{icon}</span>
                     <div>
@@ -1295,6 +1297,7 @@ export default function Jamboo() {
               </div>
 
               {formStatus === "success" && <div className="mt-5 rounded-xl bg-[#7DD3FC]/20 px-4 py-3 text-sm text-[#7DD3FC]">{t.successMessage}</div>}
+              {getFieldError("form") && <div className="mt-5 rounded-xl bg-red-500/20 px-4 py-3 text-sm text-red-300">{getFieldError("form")}</div>}
               {formStatus === "error" && formErrors.length === 0 && <div className="mt-5 rounded-xl bg-red-500/20 px-4 py-3 text-sm text-red-300">{t.errorMessage}</div>}
 
               <button type="submit" disabled={formStatus === "submitting"} className="magnetic mt-7 flex items-center justify-center gap-3 rounded-full bg-[#00B4D8] px-7 py-4 text-[10px] font-black uppercase tracking-[0.2em] text-[#0A1E3F] transition hover:bg-white disabled:opacity-60">
