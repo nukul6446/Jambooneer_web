@@ -7,6 +7,8 @@ import {
   FiArrowUpRight,
   FiCheck,
   FiChevronDown,
+  FiChevronLeft,
+  FiChevronRight,
   FiDroplet,
   FiMail,
   FiClock,
@@ -624,6 +626,7 @@ export default function Jamboo() {
   const cursor = useRef(null);
   const cursorDot = useRef(null);
   const nav = useRef(null);
+  const testimonialsTrack = useRef(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProduct, setActiveProduct] = useState(0);
@@ -695,6 +698,32 @@ export default function Jamboo() {
     email: "",
     message: "",
   });
+
+  useEffect(() => {
+    const track = testimonialsTrack.current;
+    if (!track || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const advanceTestimonials = () => {
+      const firstCard = track.querySelector("article");
+      if (!firstCard) return;
+      const cardStep = firstCard.getBoundingClientRect().width + 20;
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - cardStep / 2;
+      track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + cardStep, behavior: "smooth" });
+    };
+
+    const interval = window.setInterval(advanceTestimonials, 4200);
+    return () => window.clearInterval(interval);
+  }, [lang]);
+
+  const scrollTestimonials = (direction) => {
+    const track = testimonialsTrack.current;
+    const firstCard = track?.querySelector("article");
+    if (!track || !firstCard) return;
+    const cardStep = firstCard.getBoundingClientRect().width + 20;
+    const nextLeft = track.scrollLeft + direction * cardStep;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    track.scrollTo({ left: Math.max(0, Math.min(nextLeft, maxScroll)), behavior: "smooth" });
+  };
 
   const scrollTo = useCallback((id) => {
     setMenuOpen(false);
@@ -859,7 +888,13 @@ export default function Jamboo() {
         .to(".hero-copy-area", { y: -180, opacity: 0.15, ease: "none" }, 0)
         .to(".hero-glow-one", { x: -150, y: 100, scale: 1.5, ease: "none" }, 0)
         .to(".hero-glow-two", { x: 180, y: -120, scale: 1.6, ease: "none" }, 0)
-        .to(bottleWrap.current, { x: 360, y: 500, scale: 0.42, rotation: 32, ease: "none" }, 0)
+        .to(bottleWrap.current, {
+          x: window.matchMedia("(max-width: 767px)").matches ? 0 : 360,
+          y: window.matchMedia("(max-width: 767px)").matches ? 110 : 500,
+          scale: window.matchMedia("(max-width: 767px)").matches ? 0.84 : 0.42,
+          rotation: window.matchMedia("(max-width: 767px)").matches ? 6 : 32,
+          ease: "none",
+        }, 0)
         .to(".hero-wave", { y: -180, scale: 1.15, ease: "none" }, 0);
 
       ScrollTrigger.create({
@@ -886,8 +921,6 @@ export default function Jamboo() {
       gsap.utils.toArray(".process-card").forEach((card, i) => {
         gsap.fromTo(card, { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.9, delay: i * 0.1, ease: "power4.out", scrollTrigger: { trigger: card, start: "top 82%" } });
       });
-      gsap.to(".testimonial-track", { xPercent: -10, ease: "none", scrollTrigger: { trigger: ".testimonials-section", start: "top bottom", end: "bottom top", scrub: 1 } });
-
       const contactTL = gsap.timeline({ scrollTrigger: { trigger: ".contact-section", start: "top 75%" } });
       contactTL
         .fromTo(".contact-kicker", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7 })
@@ -1227,15 +1260,19 @@ export default function Jamboo() {
       <section className="testimonials-section relative overflow-hidden bg-[#E6F4FE] py-32 md:py-44">
         <div className="px-6 md:px-10">
           <div className="mx-auto max-w-7xl">
-            <div className="mb-16">
-              <div className="mb-5 flex items-center gap-3"><span className="h-px w-10 bg-[#00B4D8]" /><span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#0070C0]">{t.testimonialsKicker}</span></div>
+            <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
+              <div className="basis-full flex items-center gap-3"><span className="h-px w-10 bg-[#00B4D8]" /><span className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#0070C0]">{t.testimonialsKicker}</span></div>
               <div className="overflow-hidden"><h2 className="section-title-line text-5xl font-light leading-none tracking-[-0.05em] text-[#0A1E3F] md:text-7xl">{t.testimonialsTitle1}<br /><span className="font-black">{t.testimonialsTitle2}</span></h2></div>
+              <div className="flex shrink-0 gap-2" aria-label="Customer Voices controls">
+                <button type="button" onClick={() => scrollTestimonials(-1)} aria-label="Show previous customer review" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0A1E3F]/15 text-[#0A1E3F] transition-colors hover:border-[#00B4D8] hover:bg-[#00B4D8] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0070C0]"><FiChevronLeft size={17} /></button>
+                <button type="button" onClick={() => scrollTestimonials(1)} aria-label="Show next customer review" className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0A1E3F]/15 text-[#0A1E3F] transition-colors hover:border-[#00B4D8] hover:bg-[#00B4D8] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0070C0]"><FiChevronRight size={17} /></button>
+              </div>
             </div>
           </div>
         </div>
-        <div className="testimonial-track flex w-max gap-5 px-6 md:px-10">
-          {[...t.testimonials, ...t.testimonials].map((item, index) => (
-            <article key={`${item.name}-${index}`} className="w-[330px] rounded-[28px] bg-white p-8 shadow-[0_20px_60px_rgba(10,30,63,0.07)] md:w-[430px]">
+        <div ref={testimonialsTrack} className="testimonial-track flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-5 md:px-10">
+          {t.testimonials.map((item) => (
+            <article key={item.name} className="w-[330px] shrink-0 snap-start rounded-[28px] bg-white p-8 shadow-[0_20px_60px_rgba(10,30,63,0.07)] md:w-[430px]">
               <div className="text-xl tracking-[0.2em] text-[#00B4D8]">★★★★★</div>
               <p className="mt-7 text-lg font-light leading-7 text-[#1B3B6F]">"{item.quote}"</p>
               <div className="mt-10 border-t border-[#0A1E3F]/10 pt-5">

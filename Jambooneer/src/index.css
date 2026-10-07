@@ -77,6 +77,16 @@ body {
   border-width: 0;
 }
 
+.testimonial-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.testimonial-track::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .hero {
     min-height: 850px !important;
