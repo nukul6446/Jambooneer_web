@@ -89,10 +89,43 @@ body {
 
 @media (max-width: 768px) {
   .hero {
-    min-height: 850px !important;
+    min-height: max(850px, 100svh) !important;
   }
   .hero-copy-area {
     padding-bottom: 130px !important;
+  }
+}
+
+/* HERO LANDSCAPE MOBILE FIX: keep the bottle in the opening screen on short phone/tablet viewports. */
+@media (max-width: 767px) and (orientation: landscape) {
+  .hero {
+    min-height: max(720px, 100svh) !important;
+  }
+
+  .hero-copy-area {
+    grid-template-columns: minmax(0, 1.2fr) minmax(190px, 0.8fr);
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 4rem !important;
+  }
+
+  /* HERO LANDSCAPE TEXT FIT: allow the copy column to shrink and wrap beside the bottle. */
+  .hero-copy-area > :first-child {
+    min-width: 0;
+  }
+
+  .hero-copy-area h1 {
+    font-size: clamp(2rem, 7vw, 4rem);
+  }
+
+  .hero-copy-area > :last-child {
+    min-height: 420px;
+    position: relative;
+    top: -100px;
+  }
+
+  .hero-stats {
+    margin-top: 1.5rem !important;
   }
 }
 

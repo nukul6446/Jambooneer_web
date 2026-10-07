@@ -29,7 +29,9 @@ import arrsource4 from "./assets/arrsource4.jpg";
 import arroffice5 from "./assets/arroffice5.jpg";
 import arrevent6 from "./assets/arrevent6.jpg";
 import purpose from "./assets/purpose.jpg";
+import purposeVideo from "./assets/purpose_video.mp4";
 import engineer from "./assets/engineer.jpg";
+import heroVideo from "./assets/Video-Project.mp4";
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
@@ -626,6 +628,7 @@ export default function Jamboo() {
   const cursor = useRef(null);
   const cursorDot = useRef(null);
   const nav = useRef(null);
+  const heroVideoRef = useRef(null);
   const testimonialsTrack = useRef(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -878,6 +881,7 @@ export default function Jamboo() {
         const x = (e.clientX - rect.left) / rect.width - 0.5;
         const y = (e.clientY - rect.top) / rect.height - 0.5;
         gsap.to(bottleRef.current, { x: x * 24, rotationY: x * 8, rotationX: -y * 6, duration: 0.8, ease: "power3.out", overwrite: "auto" });
+        gsap.to(heroVideoRef.current, { x: x * -14, y: y * -10, scale: 1.08, duration: 1.2, ease: "power3.out", overwrite: "auto" });
       };
       if (heroElement) heroElement.addEventListener("mousemove", moveBottle);
 
@@ -888,6 +892,7 @@ export default function Jamboo() {
         .to(".hero-copy-area", { y: -180, opacity: 0.15, ease: "none" }, 0)
         .to(".hero-glow-one", { x: -150, y: 100, scale: 1.5, ease: "none" }, 0)
         .to(".hero-glow-two", { x: 180, y: -120, scale: 1.6, ease: "none" }, 0)
+        .to(heroVideoRef.current, { y: 80, scale: 1.16, opacity: 0.82, ease: "none" }, 0)
         .to(bottleWrap.current, {
           x: window.matchMedia("(max-width: 767px)").matches ? 0 : 360,
           y: window.matchMedia("(max-width: 767px)").matches ? 110 : 500,
@@ -1032,8 +1037,19 @@ export default function Jamboo() {
       )}
 
       {/* HERO */}
-      <section ref={hero} id="home" className="hero relative flex min-h-[900px] items-center overflow-hidden bg-[#E6F4FE] pt-28">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,180,216,0.22),transparent_30%),radial-gradient(circle_at_85%_75%,rgba(0,112,192,0.13),transparent_30%)]" />
+      {/* HERO VIEWPORT SIZING: svh keeps the opening scene fitted to the real mobile browser viewport. */}
+      {/* HERO BACKGROUND COVERAGE: the solid fallback prevents gaps while the video is loading or transforming. */}
+      <section ref={hero} id="home" className="hero relative flex min-h-svh items-center overflow-hidden bg-[#e6f4fe28] pt-28">
+        {/* VIDEO BACKGROUND: muted looping footage sits behind every existing hero layer. */}
+        <video ref={heroVideoRef} className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-90" autoPlay loop muted playsInline preload="metadata" aria-hidden="true">
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+        {/* VIDEO READABILITY OVERLAY: the previous stronger wash is kept here as a comment for easy restoration. */}
+        {/* <div className="pointer-events-none absolute inset-0 bg-[#E6F4FE]/65" /> */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(230,244,254,0.34)_0%,rgba(230,244,254,0.14)_48%,rgba(230,244,254,0.04)_100%)]" />
+        {/* VIDEO CINEMATIC GRADE: soft contrast and lower-edge fade keep the footage visible without competing with content. */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_35%,transparent_0%,rgba(10,30,63,0.03)_58%,rgba(10,30,63,0.12)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,180,216,0.1),transparent_30%),radial-gradient(circle_at_85%_75%,rgba(0,112,192,0.06),transparent_30%)]" />
         <div className="hero-glow-one absolute -left-40 top-20 h-[500px] w-[500px] rounded-full bg-[#7DD3FC]/40 blur-[120px]" />
         <div className="hero-glow-two absolute -right-40 bottom-0 h-[550px] w-[550px] rounded-full bg-[#00B4D8]/20 blur-[140px]" />
         <div className="absolute bottom-0 left-0 right-0 h-64 overflow-hidden opacity-40">
@@ -1106,7 +1122,12 @@ export default function Jamboo() {
             <div className="reveal relative">
               <div className="absolute -inset-5 rounded-[40px] bg-[#E6F4FE]" />
               <div className="relative h-[520px] overflow-hidden rounded-[32px]">
-                <img src={IMAGES.purpose} alt="Natural water source" className="story-image h-[120%] w-full object-cover" />
+                {/* STORY IMAGE BACKUP: keep the original purpose image here if the video should be disabled. */}
+                {/* <img src={IMAGES.purpose} alt="Natural water source" className="story-image h-[120%] w-full object-cover" /> */}
+                {/* STORY VIDEO: replaces the image in the same visual slot with matching parallax styling. */}
+                <video className="story-image h-[120%] w-full object-cover" autoPlay loop muted playsInline preload="metadata" aria-label="Natural water source">
+                  <source src={purposeVideo} type="video/mp4" />
+                </video>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A1E3F]/50 via-transparent to-transparent" />
                 <div className="absolute bottom-7 left-7 right-7 flex items-end justify-between text-white">
                   <div>
